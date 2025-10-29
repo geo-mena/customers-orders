@@ -1,0 +1,532 @@
+openapi: 3.0.3
+info:
+  title: Orders API
+  description: API for managing products and orders in the B2B Order Management System
+  version: 1.0.0
+  contact:
+    name: API Support
+
+servers:
+  - url: http://localhost:3002
+    description: Development server
+  - url: http://orders-api:3002
+    description: Docker environment
+
+tags:
+  - name: Products
+    description: Product management operations
+  - name: Orders
+    description: Order management operations
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      tags: [Health]
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  service:
+                    type: string
+                    example: orders-api
+
+  /products:
+    post:
+      summary: Create a new product
+      tags: [Products]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+
+    get:
+      summary: List products with pagination
+      tags: [Products]
+      parameters:
+        - name: search
+          in: query
+          description: Search term for name or SKU
+          schema:
+            type: string
+        - name: cursor
+          in: query
+          description: Cursor for pagination (product ID)
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Maximum number of results (max 100)
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        '200':
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  meta:
+                    type: object
+                    properties:
+                      nextCursor:
+                        type: integer
+                        nullable: true
+
+  /products/{id}:
+    get:
+      summary: Get product by ID
+      tags: [Products]
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+    patch:
+      summary: Update product price and/or stock
+      tags: [Products]
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductRequest'
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /orders:
+    post:
+      summary: Create a new order
+      description: Validates customer, checks stock, creates order and decreases stock in a transaction
+      tags: [Orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderWithItemsResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '404':
+          description: Customer or product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      summary: List orders with filters and pagination
+      tags: [Orders]
+      parameters:
+        - name: status
+          in: query
+          description: Filter by order status
+          schema:
+            type: string
+            enum: [CREATED, CONFIRMED, CANCELED]
+        - name: from
+          in: query
+          description: Filter orders created from this date (ISO 8601)
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: Filter orders created until this date (ISO 8601)
+          schema:
+            type: string
+            format: date-time
+        - name: cursor
+          in: query
+          description: Cursor for pagination (order ID)
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Maximum number of results (max 100)
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        '200':
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+                  meta:
+                    type: object
+                    properties:
+                      nextCursor:
+                        type: integer
+                        nullable: true
+
+  /orders/{id}:
+    get:
+      summary: Get order by ID with items
+      tags: [Orders]
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          description: Order details with items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderWithItemsResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /orders/{id}/confirm:
+    post:
+      summary: Confirm an order (idempotent)
+      description: Confirms an order. Requires X-Idempotency-Key header. Repeated requests with the same key return the same response.
+      tags: [Orders]
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Order confirmed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderWithItemsResponse'
+        '400':
+          description: Cannot confirm order (e.g., already canceled)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /orders/{id}/cancel:
+    post:
+      summary: Cancel an order
+      description: Cancels an order and restores stock. CREATED orders can always be canceled. CONFIRMED orders can only be canceled within 10 minutes.
+      tags: [Orders]
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          description: Order canceled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderWithItemsResponse'
+        '400':
+          description: Cannot cancel order (e.g., confirmed more than 10 minutes ago)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+components:
+  parameters:
+    ProductId:
+      name: id
+      in: path
+      required: true
+      description: Product ID
+      schema:
+        type: integer
+
+    OrderId:
+      name: id
+      in: path
+      required: true
+      description: Order ID
+      schema:
+        type: integer
+
+    IdempotencyKey:
+      name: X-Idempotency-Key
+      in: header
+      required: true
+      description: Idempotency key for safe retries
+      schema:
+        type: string
+      example: abc-123-xyz
+
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        sku:
+          type: string
+          example: LAPTOP-XPS-15
+        name:
+          type: string
+          example: Dell XPS 15 Laptop
+        price_cents:
+          type: integer
+          example: 149900
+        stock:
+          type: integer
+          example: 25
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateProductRequest:
+      type: object
+      required:
+        - sku
+        - name
+        - price_cents
+        - stock
+      properties:
+        sku:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: LAPTOP-XPS-15
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: Dell XPS 15 Laptop
+        price_cents:
+          type: integer
+          minimum: 0
+          example: 149900
+        stock:
+          type: integer
+          minimum: 0
+          example: 25
+
+    UpdateProductRequest:
+      type: object
+      properties:
+        price_cents:
+          type: integer
+          minimum: 0
+        stock:
+          type: integer
+          minimum: 0
+
+    ProductResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/Product'
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        customer_id:
+          type: integer
+          example: 1
+        status:
+          type: string
+          enum: [CREATED, CONFIRMED, CANCELED]
+          example: CREATED
+        total_cents:
+          type: integer
+          example: 269700
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        confirmed_at:
+          type: string
+          format: date-time
+          nullable: true
+        canceled_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        order_id:
+          type: integer
+          example: 1
+        product_id:
+          type: integer
+          example: 2
+        qty:
+          type: integer
+          example: 3
+        unit_price_cents:
+          type: integer
+          example: 129900
+        subtotal_cents:
+          type: integer
+          example: 389700
+        created_at:
+          type: string
+          format: date-time
+
+    OrderWithItems:
+      allOf:
+        - $ref: '#/components/schemas/Order'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/OrderItem'
+
+    CreateOrderRequest:
+      type: object
+      required:
+        - customer_id
+        - items
+      properties:
+        customer_id:
+          type: integer
+          minimum: 1
+          example: 1
+        items:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - product_id
+              - qty
+            properties:
+              product_id:
+                type: integer
+                minimum: 1
+                example: 2
+              qty:
+                type: integer
+                minimum: 1
+                example: 3
+
+    OrderWithItemsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/OrderWithItems'
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: Error message
+
+  responses:
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                example: Validation failed
+              details:
+                type: array
+                items:
+                  type: object
+
+    ConflictError:
+      description: Conflict error (e.g., SKU already exists)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
