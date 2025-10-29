@@ -104,10 +104,10 @@ sequenceDiagram
 
 ```mermaid
 stateDiagram-v2
-    [*] --> CREATED: POST /orders
-    CREATED --> CONFIRMED: POST /orders/:id/confirm
-    CREATED --> CANCELED: POST /orders/:id/cancel
-    CONFIRMED --> CANCELED: POST /orders/:id/cancel<br/>(dentro de 10 min)
+    [*] --> CREATED: Crear orden
+    CREATED --> CONFIRMED: Confirmar
+    CREATED --> CANCELED: Cancelar
+    CONFIRMED --> CANCELED: Cancelar (dentro de 10 min)
     CANCELED --> [*]
     CONFIRMED --> [*]
 
