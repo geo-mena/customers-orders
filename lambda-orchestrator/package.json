@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Lambda Orchestrator for B2B Order Management System",
   "main": "dist/handler.js",
-  "type": "module",
   "scripts": {
     "build": "tsc",
     "dev": "serverless offline start",
