@@ -1,0 +1,4 @@
+packages:
+  - 'customers-api'
+  - 'orders-api'
+  - 'lambda-orchestrator'
