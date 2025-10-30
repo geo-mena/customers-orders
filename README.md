@@ -12,9 +12,9 @@ Sistema de gestión de pedidos B2B compuesto por dos APIs REST (Customers y Orde
 - [Configuración](#configuración)
 - [Estructura del Proyecto](#estructura-del-proyecto)
 - [APIs Disponibles](#apis-disponibles)
-  - [Customers API](#customers-api)
-  - [Orders API](#orders-api)
-  - [Lambda Orchestrator](#lambda-orchestrator)
+    - [Customers API](#customers-api)
+    - [Orders API](#orders-api)
+    - [Lambda Orchestrator](#lambda-orchestrator)
 - [Flujos de Negocio](#flujos-de-negocio)
 - [Uso y Ejemplos](#uso-y-ejemplos)
 - [Base de Datos](#base-de-datos)
@@ -382,20 +382,20 @@ customers-orders/
 
 #### Endpoints Públicos
 
-| Método | Endpoint | Descripción | Autenticación |
-|--------|----------|-------------|---------------|
-| GET | `/health` | Health check | No |
-| POST | `/customers` | Crear cliente | No |
-| GET | `/customers` | Listar clientes | No |
-| GET | `/customers/:id` | Obtener cliente | No |
-| PUT | `/customers/:id` | Actualizar cliente | No |
-| DELETE | `/customers/:id` | Eliminar cliente (soft delete) | No |
+| Método | Endpoint         | Descripción                    | Autenticación |
+| ------ | ---------------- | ------------------------------ | ------------- |
+| GET    | `/health`        | Health check                   | No            |
+| POST   | `/customers`     | Crear cliente                  | No            |
+| GET    | `/customers`     | Listar clientes                | No            |
+| GET    | `/customers/:id` | Obtener cliente                | No            |
+| PUT    | `/customers/:id` | Actualizar cliente             | No            |
+| DELETE | `/customers/:id` | Eliminar cliente (soft delete) | No            |
 
 #### Endpoints Internos
 
-| Método | Endpoint | Descripción | Autenticación |
-|--------|----------|-------------|---------------|
-| GET | `/internal/customers/:id` | Validar cliente | SERVICE_TOKEN |
+| Método | Endpoint                  | Descripción     | Autenticación |
+| ------ | ------------------------- | --------------- | ------------- |
+| GET    | `/internal/customers/:id` | Validar cliente | SERVICE_TOKEN |
 
 **Documentación OpenAPI**: [customers-api/openapi.yaml](./customers-api/openapi.yaml)
 
@@ -405,22 +405,22 @@ customers-orders/
 
 #### Productos
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/products` | Crear producto |
-| GET | `/products` | Listar productos |
-| GET | `/products/:id` | Obtener producto |
-| PATCH | `/products/:id` | Actualizar precio/stock |
+| Método | Endpoint        | Descripción             |
+| ------ | --------------- | ----------------------- |
+| POST   | `/products`     | Crear producto          |
+| GET    | `/products`     | Listar productos        |
+| GET    | `/products/:id` | Obtener producto        |
+| PATCH  | `/products/:id` | Actualizar precio/stock |
 
 #### Órdenes
 
-| Método | Endpoint | Descripción | Headers Especiales |
-|--------|----------|-------------|--------------------|
-| POST | `/orders` | Crear orden | - |
-| GET | `/orders` | Listar órdenes | - |
-| GET | `/orders/:id` | Obtener orden con items | - |
-| POST | `/orders/:id/confirm` | Confirmar orden | `X-Idempotency-Key` |
-| POST | `/orders/:id/cancel` | Cancelar orden | - |
+| Método | Endpoint              | Descripción             | Headers Especiales  |
+| ------ | --------------------- | ----------------------- | ------------------- |
+| POST   | `/orders`             | Crear orden             | -                   |
+| GET    | `/orders`             | Listar órdenes          | -                   |
+| GET    | `/orders/:id`         | Obtener orden con items | -                   |
+| POST   | `/orders/:id/confirm` | Confirmar orden         | `X-Idempotency-Key` |
+| POST   | `/orders/:id/cancel`  | Cancelar orden          | -                   |
 
 **Documentación OpenAPI**: [orders-api/openapi.yaml](./orders-api/openapi.yaml)
 
@@ -430,23 +430,23 @@ customers-orders/
 
 #### Endpoint
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/orchestrator/create-and-confirm-order` | Orquesta creación y confirmación de pedido |
+| Método | Endpoint                                 | Descripción                                |
+| ------ | ---------------------------------------- | ------------------------------------------ |
+| POST   | `/orchestrator/create-and-confirm-order` | Orquesta creación y confirmación de pedido |
 
 **Request Body**:
 
 ```json
 {
-  "customer_id": 1,
-  "items": [
-    {
-      "product_id": 2,
-      "qty": 3
-    }
-  ],
-  "idempotency_key": "unique-key-123",
-  "correlation_id": "optional-correlation-id"
+    "customer_id": 1,
+    "items": [
+        {
+            "product_id": 2,
+            "qty": 3
+        }
+    ],
+    "idempotency_key": "unique-key-123",
+    "correlation_id": "optional-correlation-id"
 }
 ```
 
@@ -454,29 +454,29 @@ customers-orders/
 
 ```json
 {
-  "success": true,
-  "correlationId": "optional-correlation-id",
-  "data": {
-    "customer": {
-      "id": 1,
-      "name": "ACME Corporation",
-      "email": "ops@acme.com",
-      "phone": "+1-555-0100"
-    },
-    "order": {
-      "id": 5,
-      "status": "CONFIRMED",
-      "total_cents": 389700,
-      "items": [
-        {
-          "product_id": 2,
-          "qty": 3,
-          "unit_price_cents": 129900,
-          "subtotal_cents": 389700
+    "success": true,
+    "correlationId": "optional-correlation-id",
+    "data": {
+        "customer": {
+            "id": 1,
+            "name": "ACME Corporation",
+            "email": "ops@acme.com",
+            "phone": "+1-555-0100"
+        },
+        "order": {
+            "id": 5,
+            "status": "CONFIRMED",
+            "total_cents": 389700,
+            "items": [
+                {
+                    "product_id": 2,
+                    "qty": 3,
+                    "unit_price_cents": 129900,
+                    "subtotal_cents": 389700
+                }
+            ]
         }
-      ]
     }
-  }
 }
 ```
 
@@ -910,5 +910,6 @@ Para preguntas o soporte, contactar al equipo de desarrollo.
 ---
 
 **Documentación de APIs**:
+
 - [Customers API OpenAPI](./customers-api/openapi.yaml)
 - [Orders API OpenAPI](./orders-api/openapi.yaml)

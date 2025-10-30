@@ -3,11 +3,11 @@ import { CustomerController } from '../controllers/customerController.js';
 import { validateRequest } from '../middleware/validate.js';
 import { authenticateService } from '../middleware/auth.js';
 import {
-  createCustomerSchema,
-  getCustomerSchema,
-  listCustomersSchema,
-  updateCustomerSchema,
-  deleteCustomerSchema,
+    createCustomerSchema,
+    getCustomerSchema,
+    listCustomersSchema,
+    updateCustomerSchema,
+    deleteCustomerSchema
 } from '../utils/schemas.js';
 
 const router = Router();

@@ -17,11 +17,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 if (config.nodeEnv === 'development') {
-  app.use(morgan('dev'));
+    app.use(morgan('dev'));
 }
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'customers-api' });
+    res.json({ status: 'ok', service: 'customers-api' });
 });
 
 app.use('/customers', customerRoutes);

@@ -1,41 +1,44 @@
 {
-  "name": "customers-orders-system",
-  "version": "1.0.0",
-  "private": true,
-  "description": "B2B Order Management System - Monorepo",
-  "scripts": {
-    "build": "pnpm -r build",
-    "start": "pnpm -r --parallel start",
-    "dev": "pnpm -r --parallel dev",
-    "test": "pnpm -r test",
-    "migrate": "docker-compose exec mysql mysql -uroot -prootpassword customers_orders < db/schema.sql",
-    "seed": "docker-compose exec mysql mysql -uroot -prootpassword customers_orders < db/seed.sql",
-    "db:setup": "pnpm run migrate && pnpm run seed",
-    "docker:build": "docker-compose build",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down",
-    "docker:logs": "docker-compose logs -f",
-    "docker:restart": "pnpm run docker:down && pnpm run docker:up",
-    "customers:dev": "pnpm --filter customers-api dev",
-    "orders:dev": "pnpm --filter orders-api dev",
-    "lambda:dev": "pnpm --filter lambda-orchestrator dev",
-    "lambda:deploy": "pnpm --filter lambda-orchestrator deploy",
-    "clean": "pnpm -r clean && rm -rf node_modules",
-    "lint": "pnpm -r lint"
-  },
-  "keywords": [
-    "b2b",
-    "orders",
-    "customers",
-    "microservices",
-    "lambda",
-    "serverless"
-  ],
-  "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.10.0"
-  }
+    "name": "customers-orders-system",
+    "version": "1.0.0",
+    "private": true,
+    "description": "B2B Order Management System - Monorepo",
+    "scripts": {
+        "build": "pnpm -r build",
+        "start": "pnpm -r --parallel start",
+        "dev": "pnpm -r --parallel dev",
+        "test": "pnpm -r test",
+        "migrate": "docker-compose exec mysql mysql -uroot -prootpassword customers_orders < db/schema.sql",
+        "seed": "docker-compose exec mysql mysql -uroot -prootpassword customers_orders < db/seed.sql",
+        "db:setup": "pnpm run migrate && pnpm run seed",
+        "docker:build": "docker-compose build",
+        "docker:up": "docker-compose up -d",
+        "docker:down": "docker-compose down",
+        "docker:logs": "docker-compose logs -f",
+        "docker:restart": "pnpm run docker:down && pnpm run docker:up",
+        "customers:dev": "pnpm --filter customers-api dev",
+        "orders:dev": "pnpm --filter orders-api dev",
+        "lambda:dev": "pnpm --filter lambda-orchestrator dev",
+        "lambda:deploy": "pnpm --filter lambda-orchestrator deploy",
+        "clean": "pnpm -r clean && rm -rf node_modules",
+        "lint": "pnpm -r lint",
+        "format": "prettier --write \"**/*.{ts,js,json,md}\"",
+        "format:check": "prettier --check \"**/*.{ts,js,json,md}\""
+    },
+    "keywords": [
+        "b2b",
+        "orders",
+        "customers",
+        "microservices",
+        "lambda",
+        "serverless"
+    ],
+    "engines": {
+        "node": ">=18.0.0",
+        "pnpm": ">=8.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.10.0",
+        "prettier": "^3.6.2"
+    }
 }

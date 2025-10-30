@@ -2,10 +2,10 @@ import { Router } from 'express';
 import { ProductController } from '../controllers/productController.js';
 import { validateRequest } from '../middleware/validate.js';
 import {
-  createProductSchema,
-  updateProductSchema,
-  getProductSchema,
-  listProductsSchema,
+    createProductSchema,
+    updateProductSchema,
+    getProductSchema,
+    listProductsSchema
 } from '../utils/schemas.js';
 
 const router = Router();

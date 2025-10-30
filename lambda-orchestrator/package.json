@@ -1,41 +1,41 @@
 {
-  "name": "lambda-orchestrator",
-  "version": "1.0.0",
-  "description": "Lambda Orchestrator for B2B Order Management System",
-  "main": "dist/handler.js",
-  "scripts": {
-    "build": "tsc",
-    "dev": "serverless offline start",
-    "deploy": "serverless deploy",
-    "remove": "serverless remove",
-    "logs": "serverless logs -f orchestrator",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "clean": "rm -rf dist .serverless"
-  },
-  "keywords": [
-    "lambda",
-    "orchestrator",
-    "serverless",
-    "typescript"
-  ],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "axios": "^1.6.2",
-    "dotenv": "^16.3.1"
-  },
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.157",
-    "@types/jest": "^30.0.0",
-    "@types/node": "^20.10.0",
-    "esbuild": "^0.19.11",
-    "jest": "^30.2.0",
-    "serverless": "^3.38.0",
-    "serverless-esbuild": "^1.52.1",
-    "serverless-offline": "^13.3.0",
-    "ts-jest": "^29.4.5",
-    "typescript": "^5.3.3"
-  }
+    "name": "lambda-orchestrator",
+    "version": "1.0.0",
+    "description": "Lambda Orchestrator for B2B Order Management System",
+    "main": "dist/handler.js",
+    "scripts": {
+        "build": "tsc",
+        "dev": "serverless offline start",
+        "deploy": "serverless deploy",
+        "remove": "serverless remove",
+        "logs": "serverless logs -f orchestrator",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:coverage": "jest --coverage",
+        "clean": "rm -rf dist .serverless"
+    },
+    "keywords": [
+        "lambda",
+        "orchestrator",
+        "serverless",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "axios": "^1.6.2",
+        "dotenv": "^16.3.1"
+    },
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.157",
+        "@types/jest": "^30.0.0",
+        "@types/node": "^20.10.0",
+        "esbuild": "^0.19.11",
+        "jest": "^30.2.0",
+        "serverless": "^3.38.0",
+        "serverless-esbuild": "^1.52.1",
+        "serverless-offline": "^13.3.0",
+        "ts-jest": "^29.4.5",
+        "typescript": "^5.3.3"
+    }
 }

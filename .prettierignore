@@ -1,0 +1,10 @@
+node_modules
+dist
+.serverless
+coverage
+*.log
+pnpm-lock.yaml
+package-lock.json
+.env
+.env.*
+build

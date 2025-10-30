@@ -7,10 +7,10 @@ import { getCustomerSchema } from '../utils/schemas.js';
 const router = Router();
 
 router.get(
-  '/customers/:id',
-  authenticateService,
-  validateRequest(getCustomerSchema),
-  CustomerController.getById
+    '/customers/:id',
+    authenticateService,
+    validateRequest(getCustomerSchema),
+    CustomerController.getById
 );
 
 export default router;

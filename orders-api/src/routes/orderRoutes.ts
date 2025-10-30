@@ -3,11 +3,11 @@ import { OrderController } from '../controllers/orderController.js';
 import { validateRequest } from '../middleware/validate.js';
 import { requireIdempotencyKey } from '../middleware/idempotency.js';
 import {
-  createOrderSchema,
-  getOrderSchema,
-  listOrdersSchema,
-  confirmOrderSchema,
-  cancelOrderSchema,
+    createOrderSchema,
+    getOrderSchema,
+    listOrdersSchema,
+    confirmOrderSchema,
+    cancelOrderSchema
 } from '../utils/schemas.js';
 
 const router = Router();
@@ -19,10 +19,10 @@ router.get('/', validateRequest(listOrdersSchema), OrderController.list);
 router.get('/:id', validateRequest(getOrderSchema), OrderController.getById);
 
 router.post(
-  '/:id/confirm',
-  requireIdempotencyKey,
-  validateRequest(confirmOrderSchema),
-  OrderController.confirm
+    '/:id/confirm',
+    requireIdempotencyKey,
+    validateRequest(confirmOrderSchema),
+    OrderController.confirm
 );
 
 router.post('/:id/cancel', validateRequest(cancelOrderSchema), OrderController.cancel);
