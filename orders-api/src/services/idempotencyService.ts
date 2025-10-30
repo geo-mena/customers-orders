@@ -1,4 +1,4 @@
-import { ResultSetHeader, RowDataPacket } from 'mysql2';
+import { RowDataPacket } from 'mysql2';
 import { pool } from '../config/database.js';
 import { IdempotencyKey } from '../types/index.js';
 import { config } from '../config/env.js';
