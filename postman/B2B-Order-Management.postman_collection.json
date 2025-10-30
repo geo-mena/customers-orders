@@ -1,0 +1,529 @@
+{
+	"info": {
+		"name": "B2B Order Management System",
+		"description": "Colección completa de endpoints para el sistema de gestión de pedidos B2B",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "customers_base_url",
+			"value": "http://localhost:3001",
+			"type": "string"
+		},
+		{
+			"key": "orders_base_url",
+			"value": "http://localhost:3002",
+			"type": "string"
+		},
+		{
+			"key": "lambda_base_url",
+			"value": "http://localhost:3003",
+			"type": "string"
+		},
+		{
+			"key": "service_token",
+			"value": "your-secret-service-token-here",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Lambda Orchestrator",
+			"item": [
+				{
+					"name": "Create and Confirm Order (Full Flow)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"customer_id\": 1,\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"qty\": 2\n    },\n    {\n      \"product_id\": 2,\n      \"qty\": 1\n    }\n  ],\n  \"idempotency_key\": \"{{$randomUUID}}\"\n}"
+						},
+						"url": {
+							"raw": "{{lambda_base_url}}/dev/orchestrator/create-and-confirm-order",
+							"host": [
+								"{{lambda_base_url}}"
+							],
+							"path": [
+								"dev",
+								"orchestrator",
+								"create-and-confirm-order"
+							]
+						},
+						"description": "Orquesta el flujo completo: valida cliente, crea orden y la confirma de manera idempotente."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints del Lambda Orchestrator para flujos complejos"
+		},
+		{
+			"name": "Customers API",
+			"item": [
+				{
+					"name": "Create Customer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Empresa Tech Solutions\",\n  \"email\": \"contact@techsolutions.com\",\n  \"phone\": \"555-0123\"\n}"
+						},
+						"url": {
+							"raw": "{{customers_base_url}}/customers",
+							"host": [
+								"{{customers_base_url}}"
+							],
+							"path": [
+								"customers"
+							]
+						},
+						"description": "Crea un nuevo cliente en el sistema"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Customers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{customers_base_url}}/customers?limit=20",
+							"host": [
+								"{{customers_base_url}}"
+							],
+							"path": [
+								"customers"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "cursor",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Obtiene lista de clientes con paginación cursor-based"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{customers_base_url}}/customers/1",
+							"host": [
+								"{{customers_base_url}}"
+							],
+							"path": [
+								"customers",
+								"1"
+							]
+						},
+						"description": "Obtiene un cliente específico por su ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Customer",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Empresa Tech Solutions S.A.\",\n  \"phone\": \"555-9999\"\n}"
+						},
+						"url": {
+							"raw": "{{customers_base_url}}/customers/1",
+							"host": [
+								"{{customers_base_url}}"
+							],
+							"path": [
+								"customers",
+								"1"
+							]
+						},
+						"description": "Actualiza datos de un cliente existente"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Customer (Soft Delete)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{customers_base_url}}/customers/1",
+							"host": [
+								"{{customers_base_url}}"
+							],
+							"path": [
+								"customers",
+								"1"
+							]
+						},
+						"description": "Elimina un cliente (soft delete, mantiene registro)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer by ID (Internal)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{service_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{customers_base_url}}/internal/customers/1",
+							"host": [
+								"{{customers_base_url}}"
+							],
+							"path": [
+								"internal",
+								"customers",
+								"1"
+							]
+						},
+						"description": "Endpoint interno para comunicación entre servicios (requiere service token)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gestión de clientes"
+		},
+		{
+			"name": "Orders API - Products",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"sku\": \"LAPTOP-HP-001\",\n  \"name\": \"Laptop HP Pavilion 15\",\n  \"price_cents\": 89999,\n  \"stock\": 50\n}"
+						},
+						"url": {
+							"raw": "{{orders_base_url}}/products",
+							"host": [
+								"{{orders_base_url}}"
+							],
+							"path": [
+								"products"
+							]
+						},
+						"description": "Crea un nuevo producto en el catálogo"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{orders_base_url}}/products?limit=20",
+							"host": [
+								"{{orders_base_url}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "cursor",
+									"value": "5",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "laptop",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Obtiene lista de productos con paginación y búsqueda opcional"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{orders_base_url}}/products/1",
+							"host": [
+								"{{orders_base_url}}"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						},
+						"description": "Obtiene un producto específico por su ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"price_cents\": 79999,\n  \"stock\": 75\n}"
+						},
+						"url": {
+							"raw": "{{orders_base_url}}/products/1",
+							"host": [
+								"{{orders_base_url}}"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						},
+						"description": "Actualiza precio o stock de un producto"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gestión de productos"
+		},
+		{
+			"name": "Orders API - Orders",
+			"item": [
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"customer_id\": 1,\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"qty\": 2\n    },\n    {\n      \"product_id\": 2,\n      \"qty\": 1\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{orders_base_url}}/orders",
+							"host": [
+								"{{orders_base_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						},
+						"description": "Crea una nueva orden (estado: CREATED). Valida stock y lo reserva."
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{orders_base_url}}/orders?limit=20",
+							"host": [
+								"{{orders_base_url}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "cursor",
+									"value": "5",
+									"disabled": true
+								},
+								{
+									"key": "customer_id",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "CONFIRMED",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Obtiene lista de órdenes con filtros opcionales"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{orders_base_url}}/orders/1",
+							"host": [
+								"{{orders_base_url}}"
+							],
+							"path": [
+								"orders",
+								"1"
+							]
+						},
+						"description": "Obtiene una orden específica con todos sus items"
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Order (Idempotent)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Idempotency-Key",
+								"value": "{{$randomUUID}}",
+								"description": "Clave única para evitar confirmaciones duplicadas"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{orders_base_url}}/orders/1/confirm",
+							"host": [
+								"{{orders_base_url}}"
+							],
+							"path": [
+								"orders",
+								"1",
+								"confirm"
+							]
+						},
+						"description": "Confirma una orden de manera idempotente usando X-Idempotency-Key header"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reason\": \"Cliente solicitó cancelación\"\n}"
+						},
+						"url": {
+							"raw": "{{orders_base_url}}/orders/1/cancel",
+							"host": [
+								"{{orders_base_url}}"
+							],
+							"path": [
+								"orders",
+								"1",
+								"cancel"
+							]
+						},
+						"description": "Cancela una orden y restaura el stock (solo dentro de 10 minutos para órdenes confirmadas)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gestión de órdenes de compra"
+		},
+		{
+			"name": "Health Checks",
+			"item": [
+				{
+					"name": "Customers API Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{customers_base_url}}/health",
+							"host": [
+								"{{customers_base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Verifica el estado de Customers API"
+					},
+					"response": []
+				},
+				{
+					"name": "Orders API Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{orders_base_url}}/health",
+							"host": [
+								"{{orders_base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Verifica el estado de Orders API"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para verificar el estado de los servicios"
+		}
+	]
+}

@@ -722,7 +722,7 @@ cd orders-api && pnpm test
 
 ### Testing Manual
 
-Se incluye una colección de Postman/Insomnia con todos los endpoints en el repositorio.
+Se incluye una colección de [Postman Collection](./postman/B2B-Order-Management.postman_collection.json) con todos los endpoints en el repositorio.
 
 ## Deployment
 
