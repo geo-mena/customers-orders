@@ -730,16 +730,16 @@ Se incluye una colección de [Postman Collection](./postman/B2B-Order-Management
 
 ```bash
 # Build de todas las imágenes
-pnpm docker:build
+docker-compose build
 
 # Levantar todos los servicios
-pnpm docker:up
+docker-compose up -d
 
 # Ver logs
-pnpm docker:logs
+docker-compose logs -f
 
 # Detener servicios
-pnpm docker:down
+docker-compose down
 ```
 
 ### Deployment del Lambda a AWS
@@ -862,8 +862,6 @@ pnpm clean
 pnpm build
 ```
 
----
-
 ## Scripts Útiles
 
 ```bash
@@ -877,10 +875,10 @@ pnpm lambda:dev             # Solo Lambda
 pnpm build                  # Build de todos los servicios
 
 # Docker
-pnpm docker:build           # Build de imágenes
-pnpm docker:up              # Levantar contenedores
-pnpm docker:down            # Detener contenedores
-pnpm docker:logs            # Ver logs
+docker-compose build         # Build de imágenes
+docker-compose up -d         # Levantar contenedores
+docker-compose down          # Detener contenedores
+docker-compose logs -f       # Ver logs
 
 # Base de datos
 pnpm db:setup               # Ejecutar schema + seed
@@ -888,26 +886,6 @@ pnpm db:setup               # Ejecutar schema + seed
 # Limpieza
 pnpm clean                  # Limpiar archivos build
 ```
-
----
-
-## Contribución
-
-1. Fork el proyecto
-2. Crear una rama (`git checkout -b feature/AmazingFeature`)
-3. Commit los cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abrir un Pull Request
-
-## Licencia
-
-MIT License - Ver archivo LICENSE para más detalles
-
-## Contacto
-
-Para preguntas o soporte, contactar al equipo de desarrollo.
-
----
 
 **Documentación de APIs**:
 
