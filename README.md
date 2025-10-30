@@ -1,6 +1,10 @@
-# B2B Order Management System
+<div align="center"> 
+
+# 📦️ B2B Order Management System
 
 Sistema de gestión de pedidos B2B compuesto por dos APIs REST (Customers y Orders) y un Lambda orquestador, construido con Node.js, TypeScript, MySQL y Serverless Framework.
+
+</div>
 
 ## Tabla de Contenido
 
